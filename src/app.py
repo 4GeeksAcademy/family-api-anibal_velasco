@@ -31,14 +31,59 @@ def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
     response_body = {
-        "hello": "world",
-        "family": members
+        "family": members,
+        "id": "",
+        "first_name": "John",
+        "last_name": "Jackson",
+        "age": "33",
+        "lucky_numbers": [7, 13, 22]
     }
 
 
+
     return jsonify(response_body), 200
+
+@app.route('/member', methods=['POST'])
+def add_member():
+    new_member = request.json
+    print(new_member, "AQUI ESTOYYYYYYYYYYYYY")
+    jackson_family.add_member(new_member)
+    return jsonify({"done": "endpoint"}), 200
+
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def delete_family(member_id):
+    eliminar_familiar = jackson_family.delete_member(member_id)
+    if not eliminar_familiar:
+        return jsonify({"msg": "Familiar no encontrado"}, 400)
+    return jsonify({"done": "familiar eliminado"})
+
+@app.route('/member/<int:member_id>', methods=['PUT'])
+def update_family_member(member_id):
+    new_family_member = request.json
+    new_member = jackson_family.update_member(member_id, new_family_member)
+    if not new_member:
+        return jsonify({"msg": "no se encontro al miembro"}), 400
+    return jsonify({"done": "miembro Actualizado"})
+
+@app.route('/members/<int:member_id>', methods=['GET'])
+def get_one_member(member_id):
+    miembro_encontrado = jackson_family.get_member(member_id)
+    if not miembro_encontrado:
+        return jsonify({"msg": "no se encontro al miembro"}), 400
+    return jsonify({"done": "miembro encontrado"}), 200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
+# {
+#     "id": "Int",
+#     "first_name": "String",
+#     "last_name": "Jackson",
+#     "age": 23,
+#     "lucky_numbers": [30,12,25]
+
+# }
