@@ -14,6 +14,33 @@ CORS(app)
 
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
+Jonh = {
+    "id": jackson_family._generateId(),
+    "first_name": "Jonh",
+    "last_name": "Jackson",
+    "age": 33,
+    "lucky_numbers": [7, 13, 22]
+}
+jackson_family.add_member(Jonh)
+
+jane = {
+    "id": jackson_family._generateId(),
+    "first_name": "Jane",
+    "last_name": "Jackson",
+    "age": 35,
+    "lucky_numbers": [10, 14, 3]
+}
+jackson_family.add_member(jane)
+
+Jimmy = {
+    "id": jackson_family._generateId(),
+    "first_name": "Jimmy",
+    "last_name": "Jackson",
+    "age": 5,
+    "lucky_numbers": 1
+}
+jackson_family.add_member(Jimmy)
+
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -30,14 +57,7 @@ def handle_hello():
 
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {
-        "family": members,
-        "id": "",
-        "first_name": "John",
-        "last_name": "Jackson",
-        "age": "33",
-        "lucky_numbers": [7, 13, 22]
-    }
+    response_body = members
 
 
 
@@ -53,9 +73,7 @@ def add_member():
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def delete_family(member_id):
     eliminar_familiar = jackson_family.delete_member(member_id)
-    if not eliminar_familiar:
-        return jsonify({"msg": "Familiar no encontrado"}, 400)
-    return jsonify({"done": "familiar eliminado"})
+    return jsonify({"done": True}), 200
 
 @app.route('/member/<int:member_id>', methods=['PUT'])
 def update_family_member(member_id):
@@ -65,12 +83,11 @@ def update_family_member(member_id):
         return jsonify({"msg": "no se encontro al miembro"}), 400
     return jsonify({"done": "miembro Actualizado"})
 
-@app.route('/members/<int:member_id>', methods=['GET'])
+@app.route('/member/<int:member_id>', methods=['GET'])
 def get_one_member(member_id):
-    miembro_encontrado = jackson_family.get_member(member_id)
-    if not miembro_encontrado:
-        return jsonify({"msg": "no se encontro al miembro"}), 400
-    return jsonify({"done": "miembro encontrado"}), 200
+    un_miembro_encontrado = jackson_family.get_member(member_id)
+    response_body = un_miembro_encontrado
+    return jsonify(response_body), 200
 
 
 
