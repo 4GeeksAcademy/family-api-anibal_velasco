@@ -14,36 +14,32 @@ CORS(app)
 
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
-
-Jhon = {
+Jonh = {
     "id": jackson_family._generateId(),
-    "name":"John Jackson",
-    "age": "33 Years old",
+    "first_name": "Jonh",
+    "last_name": "Jackson",
+    "age": 33,
     "lucky_numbers": [7, 13, 22]
 }
+jackson_family.add_member(Jonh)
 
-jackson_family.add_member(Jhon)
-
-Jane = {
+jane = {
     "id": jackson_family._generateId(),
-    "name":"Jane Jackson",
-    "age":"35 Years old",
+    "first_name": "Jane",
+    "last_name": "Jackson",
+    "age": 35,
     "lucky_numbers": [10, 14, 3]
 }
-
-jackson_family.add_member(Jane)
+jackson_family.add_member(jane)
 
 Jimmy = {
     "id": jackson_family._generateId(),
-    "name": "Jimmy  Jackson",
-    "age": "5 Years old",
+    "first_name": "Jimmy",
+    "last_name": "Jackson",
+    "age": 5,
     "lucky_numbers": 1
 }
-
 jackson_family.add_member(Jimmy)
-
-
-
 
 
 # Handle/serialize errors like a JSON object
@@ -61,6 +57,9 @@ def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
     response_body = members
+
+
+
     return jsonify(response_body), 200
 
 @app.route('/member', methods=['POST'])
@@ -77,22 +76,25 @@ def add_member():
      return jsonify(success), 400
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
-def delete_member(member_id):
-    
-    
+def delete_family(member_id):
+    eliminar_familiar = jackson_family.delete_member(member_id)
+    return jsonify({"done": True}), 200
 
-     success = jackson_family.delete_member(member_id)
-    
-     
-     return jsonify({'done': True}), 200
-
-
+@app.route('/member/<int:member_id>', methods=['PUT'])
+def update_family_member(member_id):
+    new_family_member = request.json
+    new_member = jackson_family.update_member(member_id, new_family_member)
+    if not new_member:
+        return jsonify({"msg": "no se encontro al miembro"}), 400
+    return jsonify({"done": "miembro Actualizado"})
 
 @app.route('/member/<int:member_id>', methods=['GET'])
-def get_member(member_id):
-    
-    one_member = jackson_family.get_member(member_id)
-    return jsonify(one_member), 200
+def get_one_member(member_id):
+    un_miembro_encontrado = jackson_family.get_member(member_id)
+    response_body = un_miembro_encontrado
+    return jsonify(response_body), 200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

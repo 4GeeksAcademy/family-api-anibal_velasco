@@ -21,15 +21,18 @@ class FamilyStructure:
 
     def add_member(self, member):
         # fill this method and update the return
-        id = member.get("id", None) 
-        if id != None: 
-            for person in self._members: 
-                if person.get("id") == id: 
+        id = member.get("id", None)
+        if id != None:
+            for person in self._members:
+                if person.get("id") == id:
                     return {
                         "msg": "Tu cedula era repetida asi que asigne una nueva"
                     }
-        else: 
-            member["id"] = self._generateId() 
+        else:
+            member["id"] = self._generateId()
+        self._members.append(member)
+        return True
+        
 
         self._members.append(member)
         return True
